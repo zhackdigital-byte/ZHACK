@@ -34,7 +34,7 @@ body {
 
 .top-nav {
     width: 100%;
-    max-width: 900px;
+    max-width: 1000px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -82,6 +82,7 @@ body {
     border-radius: 50px;
     font-size: 0.9rem;
     box-shadow: none;
+    cursor: pointer;
 }
 
 .nav-btn:hover {
@@ -120,7 +121,7 @@ body {
 
 .app-container {
     width: 100%;
-    max-width: 900px;
+    max-width: 1000px;
     background: var(--card-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -133,7 +134,7 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 header h1 {
@@ -150,14 +151,15 @@ header p {
     font-size: 1.1rem;
 }
 
-.cards-wrapper {
+/* Dashboard Grid Updates */
+.dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
 }
 
-.person-card {
+.card {
     background: rgba(15, 23, 42, 0.6);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -165,18 +167,87 @@ header p {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.person-card:hover {
-    transform: translateY(-5px);
+.card:hover {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-.person-card h2 {
+.card h2 {
     font-size: 1.25rem;
     margin-bottom: 1.25rem;
     color: #cbd5e1;
     border-bottom: 1px solid var(--border);
     padding-bottom: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 2rem;
+}
+
+.totals-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.total-item {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.person-label {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.person-total {
+    font-weight: bold;
+    color: #fff;
+}
+
+.grand-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #fff;
+    padding-top: 0.5rem;
+}
+
+.list-card {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.expenses-list {
+    list-style: none;
+}
+
+.expense-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.expense-info h4 {
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+}
+
+.expense-info p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.expense-amount {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #fff;
 }
 
 .input-group {
@@ -194,7 +265,7 @@ header p {
     margin-bottom: 0.5rem;
 }
 
-.input-group input {
+.input-group input, .input-group select {
     width: 100%;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border);
@@ -206,22 +277,22 @@ header p {
     outline: none;
 }
 
-.input-group input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+.input-group select option {
+    background: var(--bg-color);
+    color: #fff;
 }
 
-.actions {
-    text-align: center;
-    margin-bottom: 2.5rem;
+.input-group input:focus, .input-group select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
 button {
     background: var(--primary);
     color: white;
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 600;
-    padding: 1rem 2.5rem;
+    padding: 0.8rem 1.5rem;
     border: none;
     border-radius: 12px;
     cursor: pointer;
@@ -297,11 +368,11 @@ button:disabled {
     color: #e2e8f0;
 }
 
-#settlements-list {
+#settlements-list, #modal-settlements-list {
     list-style: none;
 }
 
-#settlements-list li {
+#settlements-list li, #modal-settlements-list li {
     padding: 1rem;
     border-bottom: 1px solid var(--border);
     display: flex;
@@ -311,7 +382,7 @@ button:disabled {
     gap: 0.5rem;
 }
 
-#settlements-list li:last-child {
+#settlements-list li:last-child, #modal-settlements-list li:last-child {
     border-bottom: none;
 }
 
@@ -334,6 +405,32 @@ button:disabled {
 .arrow {
     margin: 0 0.5rem;
     color: var(--text-muted);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: var(--bg-color);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 24px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 /* Reports Styles */
@@ -379,6 +476,9 @@ button:disabled {
 }
 
 @media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
     .app-container {
         padding: 1.5rem;
         margin-top: 6rem;

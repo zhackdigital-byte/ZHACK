@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mess Bill Calculator</title>
+    <title>Mess Bill Calculator - Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -16,98 +16,125 @@
         </div>
     </nav>
 
-    <div class="app-container" style="margin-top: 5rem;">
+    <div class="app-container" style="margin-top: 5rem; max-width: 1000px;">
         <header>
-            <h1>Mess Bill Calculator</h1>
-            <p>Calculate monthly expenses for 4 people easily.</p>
+            <h1>Mess Dashboard</h1>
+            <p>Track daily expenses and generate monthly settlements.</p>
         </header>
 
         <main>
-            <div class="input-group" style="max-width: 300px; margin: 0 auto 2rem auto;">
-                <label for="report-month" style="text-align: center;">Month & Year (e.g. April 2026)</label>
-                <input type="text" id="report-month" placeholder="Enter Month & Year" required>
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div class="left-col">
+                    <!-- Add Expense Form -->
+                    <div class="card">
+                        <h2>Add Daily Expense</h2>
+                        <form id="expense-form">
+                            <div class="input-group">
+                                <label>Who Paid?</label>
+                                <select id="person-name" class="custom-select" required>
+                                    <option value="Person 1">Person 1</option>
+                                    <option value="Person 2">Person 2</option>
+                                    <option value="Person 3">Person 3</option>
+                                    <option value="Person 4">Person 4</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Amount ($)</label>
+                                <input type="number" id="expense-amount" min="0" step="0.01" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Description (Optional)</label>
+                                <input type="text" id="expense-desc" placeholder="e.g. Groceries">
+                            </div>
+                            <div class="input-group">
+                                <label>Date</label>
+                                <input type="date" id="expense-date" required>
+                            </div>
+                            <button type="submit" id="add-expense-btn" style="width: 100%;">Add Expense</button>
+                            <p id="expense-status" class="status-msg hidden"></p>
+                        </form>
+                    </div>
+
+                    <!-- Current Totals -->
+                    <div class="card mt-2">
+                        <h2>Current Month Totals</h2>
+                        <div class="totals-grid">
+                            <div class="total-item">
+                                <span class="person-label">Person 1</span>
+                                <span class="person-total" id="total-p1">$0.00</span>
+                            </div>
+                            <div class="total-item">
+                                <span class="person-label">Person 2</span>
+                                <span class="person-total" id="total-p2">$0.00</span>
+                            </div>
+                            <div class="total-item">
+                                <span class="person-label">Person 3</span>
+                                <span class="person-total" id="total-p3">$0.00</span>
+                            </div>
+                            <div class="total-item">
+                                <span class="person-label">Person 4</span>
+                                <span class="person-total" id="total-p4">$0.00</span>
+                            </div>
+                        </div>
+                        <div class="grand-total">
+                            <span>Total Expenses:</span>
+                            <span id="grand-total-amount">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="right-col">
+                    <!-- Recent Expenses List -->
+                    <div class="card list-card">
+                        <h2>This Month's Expenses</h2>
+                        <div id="loading-expenses" style="text-align:center; color:var(--text-muted); padding: 1rem 0;">Loading...</div>
+                        <ul id="expenses-list" class="expenses-list hidden">
+                            <!-- Injected via JS -->
+                        </ul>
+                        <div id="no-expenses" class="hidden" style="text-align: center; color: var(--text-muted); padding: 1rem;">
+                            No expenses recorded yet this month.
+                        </div>
+                    </div>
+                    
+                    <!-- Close Month Action -->
+                    <div class="card mt-2 close-month-card">
+                        <h2>End of Month</h2>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+                            Calculate settlements, save a final report, and clear the daily logs to start fresh for next month.
+                        </p>
+                        <div class="input-group">
+                            <label>Report Name / Month</label>
+                            <input type="text" id="report-month" placeholder="e.g. April 2026">
+                        </div>
+                        <button id="close-month-btn" class="save-btn" style="width: 100%;">Close Month & Save Report</button>
+                        <p id="close-status" class="status-msg hidden"></p>
+                    </div>
+                </div>
             </div>
 
-            <div class="cards-wrapper">
-                <!-- Person 1 -->
-                <div class="person-card">
-                    <h2>Person 1</h2>
-                    <div class="input-group">
-                        <label for="name1">Name</label>
-                        <input type="text" id="name1" placeholder="Enter name" value="Person 1">
+            <!-- Modal for Settlements Preview -->
+            <div id="settlement-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h2 style="color: #fff; text-align: center; margin-bottom: 1rem;">Report Saved!</h2>
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <h3>Total Expense</h3>
+                            <p id="modal-total-amount">$0.00</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Per Head Share</h3>
+                            <p id="modal-per-head">$0.00</p>
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label for="amount1">Amount Spent ($)</label>
-                        <input type="number" id="amount1" placeholder="0.00" min="0" step="0.01">
+                    <div class="settlements-container" style="margin-top: 1.5rem;">
+                        <h3>Who owes whom?</h3>
+                        <ul id="modal-settlements-list">
+                            <!-- Injected via JS -->
+                        </ul>
                     </div>
-                </div>
-
-                <!-- Person 2 -->
-                <div class="person-card">
-                    <h2>Person 2</h2>
-                    <div class="input-group">
-                        <label for="name2">Name</label>
-                        <input type="text" id="name2" placeholder="Enter name" value="Person 2">
-                    </div>
-                    <div class="input-group">
-                        <label for="amount2">Amount Spent ($)</label>
-                        <input type="number" id="amount2" placeholder="0.00" min="0" step="0.01">
-                    </div>
-                </div>
-
-                <!-- Person 3 -->
-                <div class="person-card">
-                    <h2>Person 3</h2>
-                    <div class="input-group">
-                        <label for="name3">Name</label>
-                        <input type="text" id="name3" placeholder="Enter name" value="Person 3">
-                    </div>
-                    <div class="input-group">
-                        <label for="amount3">Amount Spent ($)</label>
-                        <input type="number" id="amount3" placeholder="0.00" min="0" step="0.01">
-                    </div>
-                </div>
-
-                <!-- Person 4 -->
-                <div class="person-card">
-                    <h2>Person 4</h2>
-                    <div class="input-group">
-                        <label for="name4">Name</label>
-                        <input type="text" id="name4" placeholder="Enter name" value="Person 4">
-                    </div>
-                    <div class="input-group">
-                        <label for="amount4">Amount Spent ($)</label>
-                        <input type="number" id="amount4" placeholder="0.00" min="0" step="0.01">
-                    </div>
-                </div>
-            </div>
-
-            <div class="actions">
-                <button id="calculate-btn">Calculate Bill</button>
-            </div>
-
-            <div id="results" class="results-section hidden">
-                <div class="summary-cards">
-                    <div class="summary-card">
-                        <h3>Total Expense</h3>
-                        <p id="total-amount">$0.00</p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Per Head Share</h3>
-                        <p id="per-head-amount">$0.00</p>
-                    </div>
-                </div>
-
-                <div class="settlements-container">
-                    <h3>Who owes whom?</h3>
-                    <ul id="settlements-list">
-                        <!-- Settlements injected via JS -->
-                    </ul>
-                </div>
-
-                <div class="actions" style="margin-top: 2rem;">
-                    <button id="save-report-btn" class="save-btn">Save Report to Supabase</button>
-                    <p id="save-status" class="status-msg hidden"></p>
+                    <button id="close-modal-btn" style="margin-top: 2rem; width: 100%;">Awesome, start next month!</button>
                 </div>
             </div>
         </main>
