@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports History - Mess Bill Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-brand">MessCalc</div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Calculator</a>
+            <button id="logout-btn" class="nav-btn">Logout</button>
+        </div>
+    </nav>
+
+    <div class="app-container" style="margin-top: 5rem;">
+        <header>
+            <h1>Monthly Reports</h1>
+            <p>View and manage your past mess bill calculations.</p>
+        </header>
+
+        <main>
+            <div id="loading" style="text-align: center; color: var(--text-muted);">Loading reports...</div>
+            <div id="reports-container" class="reports-list hidden">
+                <!-- Reports will be injected here via JS -->
+            </div>
+            <div id="no-reports" class="hidden" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                No reports found. Go back to the calculator to create one!
+            </div>
+        </main>
+    </div>
+    <script type="module" src="reports.js"></script>
+</body>
+</html>
