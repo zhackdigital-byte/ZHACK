@@ -17,11 +17,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     const noExpenses = document.getElementById('no-expenses');
 
     // Totals Elements
-    const totalP1 = document.getElementById('total-p1');
-    const totalP2 = document.getElementById('total-p2');
-    const totalP3 = document.getElementById('total-p3');
-    const totalP4 = document.getElementById('total-p4');
+    const totalsGrid = document.getElementById('totals-grid');
     const grandTotalEl = document.getElementById('grand-total-amount');
+
+    // Dynamic Persons Management
+    let persons = JSON.parse(localStorage.getItem(`mess_persons_${session.user.id}`)) || [];
+    // Clear out old demo data if it hasn't been modified
+    if (JSON.stringify(persons) === JSON.stringify(['Person 1', 'Person 2', 'Person 3', 'Person 4'])) {
+        persons = [];
+    }
+
+    function savePersons() {
+        localStorage.setItem(`mess_persons_${session.user.id}`, JSON.stringify(persons));
+        renderPersonsSelect();
+        updateTotals();
+    }
+
+    function renderPersonsSelect() {
+        const personSelect = document.getElementById('person-name');
+        if (!personSelect) return;
+        const currentValue = personSelect.value;
+        personSelect.innerHTML = '';
+        persons.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p;
+            option.textContent = p;
+            personSelect.appendChild(option);
+        });
+        if (currentValue && persons.includes(currentValue)) {
+            personSelect.value = currentValue;
+        }
+    }
+
+    const addPersonBtn = document.getElementById('add-person-btn');
+    if (addPersonBtn) {
+        addPersonBtn.addEventListener('click', () => {
+            const input = document.getElementById('new-person-name');
+            const name = input.value.trim();
+            if (name && !persons.includes(name)) {
+                persons.push(name);
+                input.value = '';
+                savePersons();
+            }
+        });
+    }
+
+    renderPersonsSelect();
 
     let currentExpenses = [];
 
@@ -92,21 +133,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function updateTotals() {
-        let totals = { 'Person 1': 0, 'Person 2': 0, 'Person 3': 0, 'Person 4': 0 };
+        let totals = {};
+        persons.forEach(p => totals[p] = 0);
         let grandTotal = 0;
+        let personsUpdated = false;
 
         currentExpenses.forEach(exp => {
+            const amt = parseFloat(exp.amount);
             if (totals[exp.person_name] !== undefined) {
-                const amt = parseFloat(exp.amount);
                 totals[exp.person_name] += amt;
                 grandTotal += amt;
+            } else {
+                totals[exp.person_name] = amt;
+                grandTotal += amt;
+                if (!persons.includes(exp.person_name)) {
+                    persons.push(exp.person_name);
+                    personsUpdated = true;
+                }
             }
         });
 
-        totalP1.textContent = `$${totals['Person 1'].toFixed(2)}`;
-        totalP2.textContent = `$${totals['Person 2'].toFixed(2)}`;
-        totalP3.textContent = `$${totals['Person 3'].toFixed(2)}`;
-        totalP4.textContent = `$${totals['Person 4'].toFixed(2)}`;
+        if (personsUpdated) {
+            savePersons();
+            return;
+        }
+
+        if (totalsGrid) {
+            totalsGrid.innerHTML = '';
+            persons.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'total-item';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <button class="nav-btn remove-person-btn" data-name="${p}" style="padding: 0.1rem 0.4rem; font-size: 0.7rem; color: var(--danger); border-color: var(--danger);" title="Remove Person">✕</button>
+                            <span class="person-label">${p}</span>
+                        </div>
+                        <span class="person-total">$${(totals[p] || 0).toFixed(2)}</span>
+                    </div>
+                `;
+                totalsGrid.appendChild(item);
+            });
+
+            document.querySelectorAll('.remove-person-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const nameToRemove = e.currentTarget.getAttribute('data-name');
+                    const hasExpenses = currentExpenses.some(exp => exp.person_name === nameToRemove);
+                    if (hasExpenses) {
+                        alert(`Cannot remove ${nameToRemove} because they have existing expenses. Delete their expenses first.`);
+                        return;
+                    }
+                    if (confirm(`Remove ${nameToRemove}?`)) {
+                        persons = persons.filter(p => p !== nameToRemove);
+                        savePersons();
+                    }
+                });
+            });
+        }
+
         grandTotalEl.textContent = `$${grandTotal.toFixed(2)}`;
     }
 
@@ -167,7 +251,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         closeMonthBtn.textContent = 'Processing...';
 
         // 1. Calculate Totals
-        let totals = { 'Person 1': 0, 'Person 2': 0, 'Person 3': 0, 'Person 4': 0 };
+        let totals = {};
+        persons.forEach(p => totals[p] = 0);
         let grandTotal = 0;
 
         currentExpenses.forEach(exp => {
@@ -178,7 +263,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        const perHead = grandTotal / 4;
+        const perHead = persons.length > 0 ? grandTotal / persons.length : 0;
 
         // 2. Settlement Algorithm
         const balances = Object.keys(totals).map(name => ({

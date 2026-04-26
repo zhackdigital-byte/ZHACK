@@ -33,10 +33,7 @@
                             <div class="input-group">
                                 <label>Who Paid?</label>
                                 <select id="person-name" class="custom-select" required>
-                                    <option value="Person 1">Person 1</option>
-                                    <option value="Person 2">Person 2</option>
-                                    <option value="Person 3">Person 3</option>
-                                    <option value="Person 4">Person 4</option>
+                                    <!-- Injected via JS -->
                                 </select>
                             </div>
                             <div class="input-group">
@@ -59,27 +56,19 @@
                     <!-- Current Totals -->
                     <div class="card mt-2">
                         <h2>Current Month Totals</h2>
-                        <div class="totals-grid">
-                            <div class="total-item">
-                                <span class="person-label">Person 1</span>
-                                <span class="person-total" id="total-p1">$0.00</span>
-                            </div>
-                            <div class="total-item">
-                                <span class="person-label">Person 2</span>
-                                <span class="person-total" id="total-p2">$0.00</span>
-                            </div>
-                            <div class="total-item">
-                                <span class="person-label">Person 3</span>
-                                <span class="person-total" id="total-p3">$0.00</span>
-                            </div>
-                            <div class="total-item">
-                                <span class="person-label">Person 4</span>
-                                <span class="person-total" id="total-p4">$0.00</span>
-                            </div>
+                        <div class="totals-grid" id="totals-grid">
+                            <!-- Injected via JS -->
                         </div>
                         <div class="grand-total">
                             <span>Total Expenses:</span>
                             <span id="grand-total-amount">$0.00</span>
+                        </div>
+                        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                            <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Manage People</h3>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="new-person-name" placeholder="Enter name..." style="flex: 1; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-dark); color: var(--text-color);">
+                                <button type="button" id="add-person-btn" class="nav-btn" style="padding: 0.5rem 1rem;">Add</button>
+                            </div>
                         </div>
                     </div>
                 </div>
