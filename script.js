@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ${descHtml}
                 </div>
                 <div style="display: flex; align-items: center; gap: 1rem;">
-                    <span class="expense-amount">$${parseFloat(exp.amount).toFixed(2)}</span>
+                    <span class="expense-amount">AED ${parseFloat(exp.amount).toFixed(2)}</span>
                     <button class="nav-btn delete-expense-btn" data-id="${exp.id}" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; color: var(--danger); border-color: var(--danger);">X</button>
                 </div>
             `;
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <button class="nav-btn remove-person-btn" data-name="${p}" style="padding: 0.1rem 0.4rem; font-size: 0.7rem; color: var(--danger); border-color: var(--danger);" title="Remove Person">✕</button>
                             <span class="person-label">${p}</span>
                         </div>
-                        <span class="person-total">$${(totals[p] || 0).toFixed(2)}</span>
+                        <span class="person-total">AED ${(totals[p] || 0).toFixed(2)}</span>
                     </div>
                 `;
                 totalsGrid.appendChild(item);
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        grandTotalEl.textContent = `$${grandTotal.toFixed(2)}`;
+        grandTotalEl.textContent = `AED ${grandTotal.toFixed(2)}`;
     }
 
     // Add Expense
@@ -327,8 +327,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // 5. Show Modal
-        document.getElementById('modal-total-amount').textContent = `$${grandTotal.toFixed(2)}`;
-        document.getElementById('modal-per-head').textContent = `$${perHead.toFixed(2)}`;
+        document.getElementById('modal-total-amount').textContent = `AED ${grandTotal.toFixed(2)}`;
+        document.getElementById('modal-per-head').textContent = `AED ${perHead.toFixed(2)}`;
         
         const modalList = document.getElementById('modal-settlements-list');
         modalList.innerHTML = '';
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span class="arrow">➔</span>
                         <span class="receiver">${s.to}</span>
                         <span class="arrow">:</span>
-                        <span class="amount">$${s.amount.toFixed(2)}</span>
+                        <span class="amount">AED ${s.amount.toFixed(2)}</span>
                     </li>`;
             });
         }

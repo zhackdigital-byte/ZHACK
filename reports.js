@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             div.innerHTML = `
                 <div class="report-info">
                     <h3>${report.month_name}</h3>
-                    <p>Total Expense: <strong>$${report.total_expense.toFixed(2)}</strong></p>
+                    <p>Total Expense: <strong>AED ${report.total_expense.toFixed(2)}</strong></p>
                     <p>Calculated on: ${date}</p>
                 </div>
                 <button class="delete-btn" data-id="${report.id}">Delete</button>
