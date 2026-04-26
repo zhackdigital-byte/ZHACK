@@ -16,7 +16,7 @@ create table public.daily_expenses (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- Enable Row Level Security
+-- Enable Row Level Securityjgjhj
 alter table public.daily_expenses enable row level security;
 
 -- Policies
